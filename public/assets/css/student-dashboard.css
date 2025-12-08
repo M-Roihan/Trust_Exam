@@ -1,0 +1,42 @@
+/* File: public/assets/css/custom-student.css */
+
+body {
+    background-color: #f0fdf4; /* Hijau muda pudar */
+}
+
+/* Sidebar Siswa - Warna Hijau Laut */
+.sidebar {
+    min-height: 100vh;
+    background: #0f766e;
+    color: white;
+    transition: all 0.3s;
+}
+
+.sidebar a {
+    color: #ccfbf1;
+    text-decoration: none;
+    display: block;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: 0.2s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #115e59;
+    color: white;
+    padding-left: 20px;
+}
+
+.content {
+    padding: 30px;
+}
+
+.student-badge {
+    background: #14b8a6;
+    color: white;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+}

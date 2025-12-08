@@ -1,0 +1,31 @@
+/* File: public/assets/css/custom-teacher.css */
+
+body {
+    background-color: #f4f6f9;
+}
+
+.sidebar {
+    min-height: 100vh;
+    background: #2c3e50;
+    color: white;
+}
+
+.sidebar a {
+    color: #b0c4de;
+    text-decoration: none;
+    display: block;
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: 0.2s; /* Tambahan biar halus */
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #34495e;
+    color: white;
+}
+
+.content {
+    padding: 25px;
+}
