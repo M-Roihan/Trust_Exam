@@ -9,6 +9,10 @@ class Question extends Model
 {
     use HasFactory;
 
+    // --- TAMBAHAN PENTING: Mendefinisikan nama tabel singular ---
+    protected $table = 'question';
+    // ------------------------------------------------------------
+
     protected $fillable = [
         'question_set_id',
         'prompt',

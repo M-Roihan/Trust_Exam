@@ -52,7 +52,7 @@ class TeacherQuestionController extends Controller
         }
 
         // Data statis untuk dropdown
-        $subjects = ['Bahasa Indonesia', 'Matematika', 'Fisika', 'Biologi', 'Kimia', 'Sejarah', 'Geografi', 'Ekonomi', 'Sosiologi', 'Bahasa Inggris'];
+        $subjects = ['Bahasa Indonesia', 'Matematika', 'Fisika', 'Biologi', 'Kimia', 'Bahasa Inggris'];
         $semesters = ['Ganjil', 'Genap'];
         $classes = self::CLASS_LIST; // Ambil dari konstanta
 

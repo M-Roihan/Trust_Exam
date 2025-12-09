@@ -8,12 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('questions', function (Blueprint $table) {
-            $table->id();
+        Schema::create('question', function (Blueprint $table) {
+            $table->id(); 
+            
+            // Relasi ke tabel question_set (Singular)
             $table->foreignId('question_set_id')
-                ->constrained('question_sets')
+                ->constrained('question_set') 
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+                
             $table->text('prompt');
             $table->json('options');
             $table->unsignedTinyInteger('answer_index');
@@ -24,6 +27,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('question');
     }
 };

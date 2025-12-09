@@ -9,6 +9,10 @@ class QuestionSet extends Model
 {
     use HasFactory;
 
+    // --- TAMBAHAN PENTING: Mendefinisikan nama tabel singular ---
+    protected $table = 'question_set';
+    // ------------------------------------------------------------
+
     protected $fillable = [
         'teacher_id',
         'subject',
@@ -20,6 +24,7 @@ class QuestionSet extends Model
 
     public function teacher()
     {
+        // Pastikan model Guru sudah benar (sesuai file Guru.php kamu)
         return $this->belongsTo(Guru::class, 'teacher_id', 'guru_id');
     }
 
