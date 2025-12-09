@@ -27,7 +27,7 @@
             </a>
         </div>
         <div class="col-md-3">
-            <a href="#" class="card text-decoration-none h-100 shadow-sm border-0 hover-lift">
+            <a href="{{ route('teacher.exams.index') }}" class="card text-decoration-none h-100 shadow-sm border-0 hover-lift">
                 <div class="card-body text-center p-4">
                     <div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
                         <i class="fas fa-calendar-alt text-success fa-2x"></i>

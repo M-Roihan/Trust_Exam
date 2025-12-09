@@ -25,7 +25,9 @@
         </a>
         
         <small class="text-white-50 text-uppercase ps-2 mt-3 d-block" style="font-size: 0.75rem;">Ujian</small>
-        <a href="#"><i class="fas fa-calendar-alt me-2"></i> Jadwal Ujian</a>
+        <a href="{{ route('teacher.exams.index') }}" class="{{ request()->routeIs('teacher.exams.*') ? 'active' : '' }}">
+            <i class="fas fa-calendar-alt me-2"></i> Jadwal Ujian
+        </a>
         <a href="#"><i class="fas fa-chart-bar me-2"></i> Hasil Nilai</a>
         
         <hr class="text-white-50 mt-4">
