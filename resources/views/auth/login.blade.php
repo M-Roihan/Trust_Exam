@@ -100,6 +100,9 @@
                         <button type="submit" class="btn btn-primary rounded-pill w-100 fw-bold mt-4 py-2">
                             Login
                         </button>
+                        <p class="text-center mt-3 mb-0 text-muted small">
+                        Hubungi Pengawas Jika Ada Masalah Pada Login
+                        </p>
 
                     </form>
                 </div>
