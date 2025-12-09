@@ -40,7 +40,7 @@ class AdminAuthController extends Controller
         $validated = $request->validate([
             'username' => ['required', 'string', 'max:50'],
             'password' => ['required', 'string'],
-            'captcha'  => ['required', 'captcha'],
+            'captcha' => ['required', 'captcha'],
         ], [
             'captcha.captcha' => 'Kode keamanan tidak sesuai.',
         ]);
@@ -52,10 +52,10 @@ class AdminAuthController extends Controller
         $teacher = Guru::where('username', $username)->first();
         if ($teacher && Hash::check($password, $teacher->password)) {
             $this->startSession($request, 'teacher', [
-                'id'       => $teacher->guru_id, // Sesuai database Anda (guru_id)
+                'id' => $teacher->guru_id, // Sesuai database Anda (guru_id)
                 'username' => $teacher->username,
-                'name'     => $teacher->nama_guru,
-                'role'     => 'Teacher',
+                'name' => $teacher->nama_guru,
+                'role' => 'Teacher',
                 'initials' => $this->generateInitials($teacher->nama_guru),
             ]);
 
@@ -71,11 +71,11 @@ class AdminAuthController extends Controller
             }
 
             $this->startSession($request, 'student', [
-                'id'       => $student->siswa_id, // Sesuai database Anda (siswa_id)
+                'id' => $student->siswa_id, // Sesuai database Anda (siswa_id)
                 'username' => $student->username,
-                'name'     => $student->nama_siswa,
-                'role'     => 'Student',
-                'class'    => $student->kelas,
+                'name' => $student->nama_siswa,
+                'role' => 'Student',
+                'class' => $student->kelas,
                 'initials' => $this->generateInitials($student->nama_siswa),
             ]);
 
@@ -86,10 +86,10 @@ class AdminAuthController extends Controller
         $admin = Admin::where('username', $username)->first();
         if ($admin && Hash::check($password, $admin->password)) {
             $this->startSession($request, 'admin', [
-                'id'       => $admin->admin_id, // Sesuai database Anda (admin_id)
+                'id' => $admin->admin_id, // Sesuai database Anda (admin_id)
                 'username' => $admin->username,
-                'name'     => $admin->nama_admin,
-                'role'     => 'Admin',
+                'name' => $admin->nama_admin,
+                'role' => 'Admin',
                 'initials' => $this->generateInitials($admin->nama_admin),
             ]);
 
@@ -112,7 +112,7 @@ class AdminAuthController extends Controller
             'teacher_logged_in', 'teacher',
             'student_logged_in', 'student',
         ]);
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
@@ -126,7 +126,7 @@ class AdminAuthController extends Controller
     {
         // Bersihkan session role lain
         $request->session()->forget(['admin_logged_in', 'admin', 'teacher_logged_in', 'teacher', 'student_logged_in', 'student']);
-        
+
         // Set session baru
         $request->session()->put("{$type}_logged_in", true);
         $request->session()->put($type, $data);
@@ -139,8 +139,11 @@ class AdminAuthController extends Controller
         $initials = '';
         foreach ($words as $word) {
             $initials .= mb_strtoupper(mb_substr($word, 0, 1));
-            if (strlen($initials) === 2) break;
+            if (strlen($initials) === 2) {
+                break;
+            }
         }
+
         return $initials ?: 'US';
     }
 }

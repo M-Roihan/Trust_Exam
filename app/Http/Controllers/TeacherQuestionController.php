@@ -15,9 +15,9 @@ class TeacherQuestionController extends Controller
 {
     // Daftar Kelas (Disamakan dengan Admin agar konsisten)
     private const CLASS_LIST = [
-        'X IPA', 'X IPS', 
-        'XI IPA', 'XI IPS', 
-        'XII IPA', 'XII IPS'
+        'X IPA', 'X IPS',
+        'XI IPA', 'XI IPS',
+        'XII IPA', 'XII IPS',
     ];
 
     /**
@@ -72,7 +72,7 @@ class TeacherQuestionController extends Controller
 
         // Tentukan mode: Edit atau Create
         $mode = $questionSet ? 'edit' : $request->query('mode', 'create');
-        
+
         // Ambil meta data (Mapel, Kelas, dll) dari URL (create) atau Database (edit)
         $meta = [
             'subject' => $request->query('subject', 'Bahasa Indonesia'),

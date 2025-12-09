@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
-
     protected static ?string $password;
 
     /**
@@ -26,7 +25,6 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
         ];
     }
-
 
     public function unverified(): static
     {

@@ -16,16 +16,16 @@ class AdminUserController extends Controller
 
     // Daftar Kelas untuk dropdown (Konsistensi Data)
     private const CLASS_LIST = [
-        'X IPA', 'X IPS', 
-        'XI IPA', 'XI IPS', 
-        'XII IPA', 'XII IPS'
+        'X IPA', 'X IPS',
+        'XI IPA', 'XI IPS',
+        'XII IPA', 'XII IPS',
     ];
 
     // Daftar Mata Pelajaran untuk dropdown Guru
     private const SUBJECT_LIST = [
         'Bahasa Indonesia', 'Matematika', 'Fisika', 'Biologi', 'Kimia',
         'Sejarah', 'Geografi', 'Ekonomi', 'Sosiologi', 'Bahasa Inggris',
-        'Penjaskes', 'Seni Budaya', 'TIK'
+        'Penjaskes', 'Seni Budaya', 'TIK',
     ];
 
     /**
@@ -143,7 +143,7 @@ class AdminUserController extends Controller
                     'alamat' => $validated['alamat'],
                     'role' => 'Siswa',
                 ]);
-                
+
                 // Update password hint jika password diubah
                 if (! empty($validated['password'])) {
                     $entity->password_hint = $validated['password'];
@@ -158,7 +158,7 @@ class AdminUserController extends Controller
 
         $entity->save();
 
-        return $this->redirectAfter($request, $role, "Data " . strtolower($role) . " berhasil diperbarui.");
+        return $this->redirectAfter($request, $role, 'Data '.strtolower($role).' berhasil diperbarui.');
     }
 
     /**
@@ -180,7 +180,7 @@ class AdminUserController extends Controller
 
         $entity->delete();
 
-        return $this->redirectAfter($request, $role, "Data " . strtolower($role) . " berhasil dihapus.");
+        return $this->redirectAfter($request, $role, 'Data '.strtolower($role).' berhasil dihapus.');
     }
 
     /**
@@ -280,7 +280,7 @@ class AdminUserController extends Controller
 
         return redirect()
             ->route('admin.users.index', ['role' => $roleType])
-            ->with('status', "Data " . strtolower($roleType) . " berhasil ditambahkan.");
+            ->with('status', 'Data '.strtolower($roleType).' berhasil ditambahkan.');
     }
 
     // --- Helper Functions ---
@@ -314,6 +314,7 @@ class AdminUserController extends Controller
             ->values()
             ->map(function (Siswa $siswa, int $index) {
                 $status = $siswa->status ?? 'Aktif';
+
                 return [
                     'id' => $siswa->getKey(),
                     'no' => $index + 1,
@@ -375,7 +376,7 @@ class AdminUserController extends Controller
         return match ($role) {
             'Guru' => [
                 'headers' => ['No', 'Nama Guru', 'Username', 'Mata Pelajaran', 'Aksi'],
-                'rows' => Guru::query()->orderBy('nama_guru')->get()->map(fn($guru, $i) => [
+                'rows' => Guru::query()->orderBy('nama_guru')->get()->map(fn ($guru, $i) => [
                     'id' => $guru->getKey(),
                     'data' => [$i + 1, $guru->nama_guru, $guru->username, $guru->matapelajaran],
                     'actions' => true,
@@ -383,7 +384,7 @@ class AdminUserController extends Controller
             ],
             'Admin' => [
                 'headers' => ['No', 'Nama Admin', 'Username', 'Role', 'Aksi'],
-                'rows' => Admin::query()->orderBy('nama_admin')->get()->map(fn($admin, $i) => [
+                'rows' => Admin::query()->orderBy('nama_admin')->get()->map(fn ($admin, $i) => [
                     'id' => $admin->getKey(),
                     'data' => [$i + 1, $admin->nama_admin, $admin->username, 'Admin'],
                     'actions' => true,
@@ -391,7 +392,7 @@ class AdminUserController extends Controller
             ],
             default => [
                 'headers' => ['No', 'Nama Lengkap', 'NIS', 'Jenis Kelamin', 'Kelas', 'Tempat Lahir', 'Tanggal Lahir', 'Alamat', 'Aksi'],
-                'rows' => Siswa::query()->orderBy('nama_siswa')->get()->map(fn($siswa, $i) => [
+                'rows' => Siswa::query()->orderBy('nama_siswa')->get()->map(fn ($siswa, $i) => [
                     'id' => $siswa->getKey(),
                     'data' => [
                         $i + 1,
