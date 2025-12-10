@@ -4,7 +4,8 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\TeacherQuestionController;
-use App\Http\Controllers\TeacherExamController; // <-- 1. Tambahan Import Controller Baru
+use App\Http\Controllers\TeacherExamController;
+use App\Http\Controllers\StudentExamController; // <-- Pastikan ini ada
 
 use Illuminate\Support\Facades\Route;
 
@@ -52,8 +53,7 @@ Route::middleware('teacher.auth')->group(function () {
             Route::delete('/{questionSet}', 'destroy')->name('destroy');
         });
 
-    // --- FITUR 2: JADWAL UJIAN (Exams) [BARU] ---
-    // Ini route baru yang saya tambahkan untuk mengatur jadwal
+    // --- FITUR 2: JADWAL UJIAN (Exams) ---
     Route::controller(TeacherExamController::class)
         ->prefix('guru/exams')
         ->name('teacher.exams.')
@@ -67,10 +67,31 @@ Route::middleware('teacher.auth')->group(function () {
 
 
 // === SISWA ROUTES ===
-    Route::middleware('student.auth')->group(function () {
+Route::middleware('student.auth')->group(function () {
 
+    // 1. Dashboard & List Ujian
     Route::get('/siswa/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
     Route::get('/siswa/list-ujian', [StudentDashboardController::class, 'examList'])->name('student.exams');
-    
+
+    // 2. FITUR MENGERJAKAN UJIAN (Exam Engine) - INI YANG BARU DITAMBAHKAN
+    Route::controller(StudentExamController::class)
+        ->prefix('siswa/exam')
+        ->name('student.exam.')
+        ->group(function () {
+            // Halaman Konfirmasi ("Apakah anda yakin?")
+            Route::get('/{exam}/confirmation', 'confirmation')->name('confirmation');
+            
+            // Logika Mulai Mengerjakan (Start Timer)
+            Route::get('/{exam}/start', 'start')->name('start');
+            
+            // Halaman Soal Utama
+            Route::get('/{exam}/show/{number?}', 'show')->name('show');
+            
+            // Simpan Jawaban (AJAX)
+            Route::post('/save-answer', 'saveAnswer')->name('save_answer');
+            
+            // Selesai Ujian
+            Route::post('/{exam}/finish', 'finish')->name('finish');
+        });
 
 });
