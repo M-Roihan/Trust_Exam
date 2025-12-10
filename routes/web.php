@@ -67,6 +67,10 @@ Route::middleware('teacher.auth')->group(function () {
 
 
 // === SISWA ROUTES ===
-Route::middleware('student.auth')->group(function () {
+    Route::middleware('student.auth')->group(function () {
+
     Route::get('/siswa/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
+    Route::get('/siswa/list-ujian', [StudentDashboardController::class, 'examList'])->name('student.exams');
+    
+
 });
