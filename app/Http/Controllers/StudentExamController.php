@@ -41,7 +41,7 @@ class StudentExamController extends Controller
     {
         $student = session('student');
         
-        // Cari atau Buat data di tabel ExamResult
+        // Cari data pengerjaan (resume) atau Buat baru (start)
         $examResult = ExamResult::firstOrCreate(
             [
                 'ujian_id' => $examId, 
@@ -50,13 +50,15 @@ class StudentExamController extends Controller
             [
                 'status' => 'Sedang Dikerjakan',
                 'waktu_mulai' => Carbon::now(),
-                // Waktu selesai belum di-set di sini, nanti di logic bawah
+                // Waktu selesai dihitung di bawah
             ]
         );
 
-        // Jika baru dibuat, set waktu selesai berdasarkan durasi ujian
-        if ($examResult->wasRecentlyCreated) {
+        // PERBAIKAN 1: Auto-Repair saat Start
+        // Cek jika data baru dibuat ATAU waktu_selesai masih kosong (akibat error sebelumnya)
+        if ($examResult->wasRecentlyCreated || empty($examResult->waktu_selesai)) {
             $exam = Exam::find($examId);
+            
             // Hitung jam selesai: Sekarang + Durasi Menit
             $examResult->waktu_selesai = Carbon::now()->addMinutes($exam->durasi);
             $examResult->save();
@@ -78,6 +80,14 @@ class StudentExamController extends Controller
         $examResult = ExamResult::where('ujian_id', $examId)
             ->where('siswa_id', $student['id'])
             ->firstOrFail();
+
+        // PERBAIKAN 2: Auto-Repair saat Show (PENTING!)
+        // Jika karena error sebelumnya waktu_selesai jadi NULL, kita perbaiki di sini
+        if (is_null($examResult->waktu_selesai)) {
+            $examResult->waktu_selesai = Carbon::now()->addMinutes($exam->durasi);
+            $examResult->save();
+            $examResult->refresh(); // Ambil data terbaru
+        }
 
         // CEK 1: Apakah waktu sudah habis?
         if (Carbon::now()->greaterThan($examResult->waktu_selesai) && $examResult->status !== 'Selesai') {

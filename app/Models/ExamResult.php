@@ -9,15 +9,18 @@ class ExamResult extends Model
 {
     use HasFactory;
 
-    // Nama tabel di database (sesuai migrasi yang kita buat)
     protected $table = 'exam_result';
 
-    // Kolom yang boleh diisi (Mass Assignment)
+    // --- INI PERBAIKANNYA ---
+    // Kita wajib memberi tahu Laravel nama primary key-nya
+    protected $primaryKey = 'hasil_id'; 
+    // -------------------------
+
     protected $fillable = [
-        'exam_id',
-        'student_id',
+        'ujian_id',
+        'siswa_id',
         'nilai',
-        'status', // 'Belum Mulai', 'Sedang Dikerjakan', 'Selesai'
+        'status', 
         'waktu_mulai',
         'waktu_selesai',
     ];
@@ -27,16 +30,13 @@ class ExamResult extends Model
         'waktu_selesai' => 'datetime',
     ];
 
-    // Relasi ke Ujian
     public function exam()
     {
-        return $this->belongsTo(Exam::class, 'exam_id');
+        return $this->belongsTo(Exam::class, 'ujian_id');
     }
 
-    // Relasi ke Siswa
     public function student()
     {
-        // Sesuaikan 'student_id' dengan kolom di tabel siswa kamu jika perlu
-        return $this->belongsTo(Siswa::class, 'student_id');
+        return $this->belongsTo(Siswa::class, 'siswa_id');
     }
 }
