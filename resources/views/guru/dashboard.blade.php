@@ -66,14 +66,21 @@
             <h5 class="mb-0"><i class="fas fa-bullhorn text-danger me-2"></i>Pengumuman Penting</h5>
         </div>
         <div class="card-body">
-            <div class="border-start border-4 border-danger ps-3">
-                <h6 class="fw-bold">Persiapan Ujian Akhir Semester (UAS)</h6>
-                <p class="text-muted mb-2">Pelaksanaan UAS akan dimulai pada <strong>.../.../...</strong> Mohon bapak/ibu guru memperhatikan hal berikut:</p>
-                <ul class="mb-0 text-muted small">
-                    <li>Soal wajib diupload maksimal H-1 sebelum ujian.</li>
-                </ul>
-            </div>
-        </div>
+    <div class="border-start border-4 border-danger ps-3">
+        <h6 class="fw-bold">Persiapan Ujian Akhir Semester (UAS)</h6>
+        <p class="text-muted mb-2">
+            Pelaksanaan UAS akan dimulai pada <strong>.../.../...</strong>.
+            Mohon Bapak/Ibu Guru memperhatikan beberapa ketentuan berikut:
+        </p>
+        <ul class="mb-0 text-muted small">
+            <li>Soal ujian wajib di-upload maksimal H-1 sebelum pelaksanaan ujian.</li>
+            <li>Pastikan soal telah diperiksa kembali sebelum di-upload.</li>
+            <li>Format soal harus sesuai ketentuan yang ditetapkan sekolah.</li>
+            <li>Apabila terdapat kendala, segera hubungi Admin atau panitia Ujian</li>
+        </ul>
+    </div>
+</div>
+
     </div>
 </div>
 
