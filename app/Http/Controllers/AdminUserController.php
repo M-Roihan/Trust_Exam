@@ -24,8 +24,7 @@ class AdminUserController extends Controller
     // Daftar Mata Pelajaran untuk dropdown Guru
     private const SUBJECT_LIST = [
         'Bahasa Indonesia', 'Matematika', 'Fisika', 'Biologi', 'Kimia',
-        'Sejarah', 'Geografi', 'Ekonomi', 'Sosiologi', 'Bahasa Inggris',
-        'Penjaskes', 'Seni Budaya', 'TIK',
+        'Bahasa Inggris',
     ];
 
     /**

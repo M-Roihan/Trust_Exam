@@ -25,9 +25,10 @@
             <i class="fas fa-home me-2"></i> Beranda
         </a>
         
-        <a href="#">
+         <a href="{{ route('student.exams') }}" class="nav-link">
             <i class="fas fa-file-alt me-2"></i> Daftar Ujian
         </a>
+
         <a href="#">
             <i class="fas fa-history me-2"></i> Riwayat Nilai
         </a>

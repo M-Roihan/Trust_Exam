@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Exam;
 use App\Models\Question;
-use App\Models\QuestionSet;
+use App\Models\QuestionSet; // <--- PENTING: Tambahan Import Model Exam
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -13,7 +14,7 @@ use Illuminate\View\View;
 
 class TeacherQuestionController extends Controller
 {
-    // Daftar Kelas (Disamakan dengan Admin agar konsisten)
+    // Daftar Kelas
     private const CLASS_LIST = [
         'X IPA', 'X IPS',
         'XI IPA', 'XI IPS',
@@ -25,13 +26,11 @@ class TeacherQuestionController extends Controller
      */
     public function index(Request $request): View|RedirectResponse
     {
-        // Cek login guru
         $teacher = $this->resolveTeacher();
         if (! $teacher) {
             return redirect()->route('login')->withErrors(['auth' => 'Sesi guru tidak ditemukan.']);
         }
 
-        // Ambil data soal milik guru ini
         $questionSets = QuestionSet::with('teacher')
             ->withCount('questions')
             ->where('teacher_id', $teacher['id'])
@@ -51,17 +50,15 @@ class TeacherQuestionController extends Controller
             return redirect()->route('login')->withErrors(['auth' => 'Sesi guru tidak ditemukan.']);
         }
 
-        // Data statis untuk dropdown
-        $subjects = ['Bahasa Indonesia', 'Matematika', 'Fisika', 'Biologi', 'Kimia', 'Sejarah', 'Geografi', 'Ekonomi', 'Sosiologi', 'Bahasa Inggris'];
+        $subjects = ['Bahasa Indonesia', 'Matematika', 'Fisika', 'Biologi', 'Kimia', 'Bahasa Inggris'];
         $semesters = ['Ganjil', 'Genap'];
-        $classes = self::CLASS_LIST; // Ambil dari konstanta
+        $classes = self::CLASS_LIST;
 
         return view('guru.questions.create', compact('teacher', 'subjects', 'semesters', 'classes'));
     }
 
     /**
      * Halaman Step 2: Builder Soal (Input Pertanyaan & Jawaban).
-     * Digunakan untuk Create Baru maupun Edit.
      */
     public function builder(Request $request, ?QuestionSet $questionSet = null): View|RedirectResponse
     {
@@ -70,10 +67,8 @@ class TeacherQuestionController extends Controller
             return redirect()->route('login')->withErrors(['auth' => 'Sesi guru tidak ditemukan.']);
         }
 
-        // Tentukan mode: Edit atau Create
         $mode = $questionSet ? 'edit' : $request->query('mode', 'create');
 
-        // Ambil meta data (Mapel, Kelas, dll) dari URL (create) atau Database (edit)
         $meta = [
             'subject' => $request->query('subject', 'Bahasa Indonesia'),
             'exam_type' => $request->query('exam_type', 'UTS'),
@@ -83,9 +78,7 @@ class TeacherQuestionController extends Controller
 
         $questions = [];
 
-        // Jika sedang mengedit, muat soal lama dari database
         if ($questionSet) {
-            // Keamanan: Cek apakah guru ini pemilik soal
             if ((int) $questionSet->teacher_id !== (int) $teacher['id']) {
                 return redirect()->route('teacher.questions.index')->withErrors(['questions' => 'Anda tidak memiliki akses ke set soal tersebut.']);
             }
@@ -108,10 +101,8 @@ class TeacherQuestionController extends Controller
                 ->toArray();
         }
 
-        // Pertahankan inputan lama jika terjadi error validasi
         $questions = old('questions', $questions);
 
-        // Jika kosong, siapkan 1 template soal kosong agar tampilan tidak rusak
         if (empty($questions)) {
             $questions = [[
                 'prompt' => '',
@@ -135,9 +126,7 @@ class TeacherQuestionController extends Controller
 
         $validated = $this->validateQuestionRequest($request);
 
-        // Gunakan Transaksi Database: Semua tersimpan atau batal semua jika error
         DB::transaction(function () use ($validated, $teacher) {
-            // 1. Simpan Header Soal (QuestionSet)
             $questionSet = QuestionSet::create([
                 'teacher_id' => $teacher['id'],
                 'subject' => $validated['subject'],
@@ -147,7 +136,6 @@ class TeacherQuestionController extends Controller
                 'description' => Arr::get($validated, 'description'),
             ]);
 
-            // 2. Simpan Butir-butir Soal (Questions)
             foreach ($validated['questions'] as $index => $question) {
                 $questionSet->questions()->create([
                     'prompt' => $question['prompt'],
@@ -171,7 +159,6 @@ class TeacherQuestionController extends Controller
             return redirect()->route('login')->withErrors(['auth' => 'Sesi guru tidak ditemukan.']);
         }
 
-        // Cek kepemilikan
         if ((int) $questionSet->teacher_id !== (int) $teacher['id']) {
             return redirect()->route('teacher.questions.index')->withErrors(['questions' => 'Anda tidak memiliki akses ke set soal tersebut.']);
         }
@@ -179,7 +166,6 @@ class TeacherQuestionController extends Controller
         $validated = $this->validateQuestionRequest($request);
 
         DB::transaction(function () use ($questionSet, $validated) {
-            // 1. Update Header
             $questionSet->update([
                 'subject' => $validated['subject'],
                 'exam_type' => $validated['exam_type'],
@@ -188,7 +174,6 @@ class TeacherQuestionController extends Controller
                 'description' => Arr::get($validated, 'description'),
             ]);
 
-            // 2. Hapus semua soal lama & simpan ulang yang baru (Strategi Reset)
             $questionSet->questions()->delete();
 
             foreach ($validated['questions'] as $index => $question) {
@@ -205,7 +190,7 @@ class TeacherQuestionController extends Controller
     }
 
     /**
-     * Menghapus paket soal.
+     * Menghapus paket soal (DENGAN PENGAMAN).
      */
     public function destroy(QuestionSet $questionSet): RedirectResponse
     {
@@ -218,6 +203,17 @@ class TeacherQuestionController extends Controller
             return redirect()->route('teacher.questions.index')->withErrors(['questions' => 'Anda tidak memiliki akses ke set soal tersebut.']);
         }
 
+        // --- BAGIAN INI YANG MENCEGAH ERROR 500 ---
+        // Cek apakah soal dipakai di Jadwal Ujian (tabel exams)
+        $isUsedInExam = Exam::where('question_set_id', $questionSet->id)->exists();
+
+        if ($isUsedInExam) {
+            // Jika dipakai, kembalikan dengan pesan error (JANGAN DIHAPUS)
+            return redirect()->route('teacher.questions.index')
+                ->with('error', 'Gagal menghapus! Paket soal ini sedang digunakan dalam Jadwal Ujian. Silakan hapus jadwal ujiannya terlebih dahulu.');
+        }
+        // -------------------------------------------
+
         $questionSet->delete();
 
         return redirect()->route('teacher.questions.index')->with('status', 'Set soal berhasil dihapus.');
@@ -225,7 +221,6 @@ class TeacherQuestionController extends Controller
 
     // --- Helper Functions ---
 
-    // Validasi input form soal (array multidimensi)
     private function validateQuestionRequest(Request $request): array
     {
         $data = $request->validate([
@@ -241,7 +236,6 @@ class TeacherQuestionController extends Controller
             'questions.*.answer' => ['required', 'integer', 'min:0'],
         ]);
 
-        // Cek logika: Kunci jawaban tidak boleh di luar jumlah opsi
         $questions = collect($data['questions'])
             ->map(function (array $question, int $index) {
                 $options = array_values($question['options']);
@@ -267,11 +261,9 @@ class TeacherQuestionController extends Controller
         return $data;
     }
 
-    // Mengambil data guru dari session
     private function resolveTeacher(): ?array
     {
         $teacher = session('teacher');
-
         if (! $teacher || ! array_key_exists('id', $teacher)) {
             return null;
         }

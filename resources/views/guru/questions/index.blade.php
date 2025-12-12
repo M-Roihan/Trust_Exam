@@ -11,16 +11,28 @@
         </a>
     </div>
 
+    {{-- ALERT SUKSES (HIJAU) --}}
     @if (session('status'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('status') }}
+            <i class="fas fa-check-circle me-2"></i> {{ session('status') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    {{-- ALERT ERROR (MERAH) - INI YANG BARU DITAMBAHKAN --}}
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
     @if ($questionSets->isEmpty())
         <div class="text-center py-5">
-            <img src="{{ asset('assets/img/icon-question.svg') }}" alt="Empty" style="width: 150px; opacity: 0.5;">
+            {{-- Pastikan path gambarnya benar, jika tidak ada gambar, ganti dengan icon font awesome --}}
+            <div class="mb-3 text-muted" style="opacity: 0.5;">
+                <i class="fas fa-folder-open fa-4x"></i>
+            </div>
             <p class="text-muted mt-3">Belum ada paket soal yang dibuat.</p>
         </div>
     @else
@@ -37,6 +49,8 @@
                             
                             <div class="d-flex align-items-center text-muted small mb-3">
                                 <i class="fas fa-user-graduate me-2"></i> {{ $set->class_level }}
+                                <span class="mx-2">|</span>
+                                <i class="fas fa-list-ol me-2"></i> {{ $set->questions_count ?? 0 }} Soal
                             </div>
                             
                             <hr class="my-3">
