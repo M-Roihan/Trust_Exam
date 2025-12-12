@@ -33,4 +33,3 @@ Hasil yang diharapkan: ...
 - [ ] Mengikuti konvensi commit (Conventional Commits)
 - [ ] Lulus CI (test, pint, build)
 - [ ] Update dokumentasi bila perlu
-
