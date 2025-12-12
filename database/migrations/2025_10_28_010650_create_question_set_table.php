@@ -9,9 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('question_set', function (Blueprint $table) {
-            $table->id(); 
-            $table->unsignedInteger('teacher_id')->nullable(); 
-            
+            $table->id();
+            $table->unsignedInteger('teacher_id')->nullable();
+
             $table->string('subject', 120);
             $table->string('exam_type', 120);
             $table->string('semester', 60);

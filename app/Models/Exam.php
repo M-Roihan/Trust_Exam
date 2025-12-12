@@ -10,10 +10,10 @@ class Exam extends Model
     use HasFactory;
 
     // Nama tabel singular (sesuai migrasi kamu)
-    protected $table = 'exam'; 
-    
+    protected $table = 'exam';
+
     // Primary Key (sesuai migrasi kamu)
-    protected $primaryKey = 'ujian_id'; 
+    protected $primaryKey = 'ujian_id';
 
     protected $guarded = ['ujian_id'];
 

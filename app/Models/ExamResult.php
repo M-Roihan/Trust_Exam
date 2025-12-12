@@ -13,14 +13,14 @@ class ExamResult extends Model
 
     // --- INI PERBAIKANNYA ---
     // Kita wajib memberi tahu Laravel nama primary key-nya
-    protected $primaryKey = 'hasil_id'; 
+    protected $primaryKey = 'hasil_id';
     // -------------------------
 
     protected $fillable = [
         'ujian_id',
         'siswa_id',
         'nilai',
-        'status', 
+        'status',
         'waktu_mulai',
         'waktu_selesai',
     ];

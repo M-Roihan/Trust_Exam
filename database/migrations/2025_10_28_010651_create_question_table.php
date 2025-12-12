@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('question', function (Blueprint $table) {
-            $table->id(); 
-            
+            $table->id();
+
             // Relasi ke tabel question_set (Singular)
             $table->foreignId('question_set_id')
-                ->constrained('question_set') 
+                ->constrained('question_set')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-                
+
             $table->text('prompt');
             $table->json('options');
             $table->unsignedTinyInteger('answer_index');

@@ -17,7 +17,7 @@ class StudentAnswer extends Model
         'hasil_id',       // Foreign key ke tabel exam_result
         'question_id',    // Foreign key ke tabel question
         'jawaban_siswa',  // Index jawaban (0, 1, 2, 3, dst)
-        'waktu_auto_save' // Mencatat kapan jawaban disimpan
+        'waktu_auto_save', // Mencatat kapan jawaban disimpan
     ];
 
     protected $casts = [

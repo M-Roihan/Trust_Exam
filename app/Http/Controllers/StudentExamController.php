@@ -17,7 +17,9 @@ class StudentExamController extends Controller
     public function confirmation($examId)
     {
         $student = session('student');
-        if (!$student) return redirect()->route('login');
+        if (! $student) {
+            return redirect()->route('login');
+        }
 
         // Ambil data ujian lengkap dengan Guru & Paket Soal
         $exam = Exam::with(['questionSet', 'teacher'])->findOrFail($examId);
@@ -40,12 +42,12 @@ class StudentExamController extends Controller
     public function start($examId)
     {
         $student = session('student');
-        
+
         // Cari data pengerjaan (resume) atau Buat baru (start)
         $examResult = ExamResult::firstOrCreate(
             [
-                'ujian_id' => $examId, 
-                'siswa_id' => $student['id']
+                'ujian_id' => $examId,
+                'siswa_id' => $student['id'],
             ],
             [
                 'status' => 'Sedang Dikerjakan',
@@ -58,7 +60,7 @@ class StudentExamController extends Controller
         // Cek jika data baru dibuat ATAU waktu_selesai masih kosong (akibat error sebelumnya)
         if ($examResult->wasRecentlyCreated || empty($examResult->waktu_selesai)) {
             $exam = Exam::find($examId);
-            
+
             // Hitung jam selesai: Sekarang + Durasi Menit
             $examResult->waktu_selesai = Carbon::now()->addMinutes($exam->durasi);
             $examResult->save();
@@ -75,7 +77,7 @@ class StudentExamController extends Controller
     {
         $student = session('student');
         $exam = Exam::findOrFail($examId);
-        
+
         // Ambil data pengerjaan siswa
         $examResult = ExamResult::where('ujian_id', $examId)
             ->where('siswa_id', $student['id'])
@@ -106,12 +108,12 @@ class StudentExamController extends Controller
 
         // Logika Pagination Manual (Index Array mulai dari 0)
         $index = $number - 1;
-        
+
         // Jika nomor soal tidak valid, kembalikan ke nomor 1
-        if (!isset($questions[$index])) {
+        if (! isset($questions[$index])) {
             return redirect()->route('student.exam.show', ['exam' => $examId, 'number' => 1]);
         }
-        
+
         $currentQuestion = $questions[$index];
 
         // Cek apakah siswa sudah menjawab soal ini sebelumnya?
@@ -147,7 +149,7 @@ class StudentExamController extends Controller
             ],
             [
                 'jawaban_siswa' => $request->answer_index,
-                'waktu_auto_save' => Carbon::now()
+                'waktu_auto_save' => Carbon::now(),
             ]
         );
 
@@ -161,29 +163,29 @@ class StudentExamController extends Controller
     {
         $student = session('student');
         $exam = Exam::findOrFail($examId);
-        
+
         $examResult = ExamResult::where('ujian_id', $examId)
             ->where('siswa_id', $student['id'])
             ->first();
 
-        if (!$examResult || $examResult->status == 'Selesai') {
+        if (! $examResult || $examResult->status == 'Selesai') {
             return redirect()->route('student.dashboard');
         }
 
         // --- LOGIKA HITUNG NILAI ---
         // 1. Ambil Kunci Jawaban (Dari tabel questions)
         $questions = Question::where('question_set_id', $exam->question_set_id)->get();
-        
+
         // 2. Ambil Jawaban Siswa
         $studentAnswers = StudentAnswer::where('hasil_id', $examResult->hasil_id)->get();
-        
+
         $correctCount = 0;
         $totalQuestions = $questions->count();
 
         // 3. Bandingkan jawaban
         foreach ($studentAnswers as $ans) {
             $qs = $questions->find($ans->question_id);
-            if ($qs && (int)$ans->jawaban_siswa === (int)$qs->answer_index) {
+            if ($qs && (int) $ans->jawaban_siswa === (int) $qs->answer_index) {
                 $correctCount++;
             }
         }
@@ -199,6 +201,6 @@ class StudentExamController extends Controller
         ]);
 
         return redirect()->route('student.dashboard')
-            ->with('status', 'Ujian selesai! Nilai Anda: ' . number_format($score, 2));
+            ->with('status', 'Ujian selesai! Nilai Anda: '.number_format($score, 2));
     }
 }

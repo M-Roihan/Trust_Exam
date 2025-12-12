@@ -3,10 +3,9 @@
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\StudentDashboardController;
-use App\Http\Controllers\TeacherQuestionController;
+use App\Http\Controllers\StudentExamController;
 use App\Http\Controllers\TeacherExamController;
-use App\Http\Controllers\StudentExamController; // <-- Pastikan ini ada
-
+use App\Http\Controllers\TeacherQuestionController; // <-- Pastikan ini ada
 use Illuminate\Support\Facades\Route;
 
 // === AUTHENTICATION ===
@@ -17,7 +16,6 @@ Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 Route::get('/captcha/refresh', function () {
     return captcha_src('flat');
 })->name('captcha.refresh');
-
 
 // === ADMIN ROUTES ===
 Route::middleware('admin.auth')->group(function () {
@@ -33,7 +31,6 @@ Route::middleware('admin.auth')->group(function () {
         Route::delete('/admin/users/{role}/{id}', 'destroy')->name('admin.users.destroy');
     });
 });
-
 
 // === GURU ROUTES ===
 Route::middleware('teacher.auth')->group(function () {
@@ -65,7 +62,6 @@ Route::middleware('teacher.auth')->group(function () {
         });
 });
 
-
 // === SISWA ROUTES ===
 Route::middleware('student.auth')->group(function () {
 
@@ -80,16 +76,16 @@ Route::middleware('student.auth')->group(function () {
         ->group(function () {
             // Halaman Konfirmasi ("Apakah anda yakin?")
             Route::get('/{exam}/confirmation', 'confirmation')->name('confirmation');
-            
+
             // Logika Mulai Mengerjakan (Start Timer)
             Route::get('/{exam}/start', 'start')->name('start');
-            
+
             // Halaman Soal Utama
             Route::get('/{exam}/show/{number?}', 'show')->name('show');
-            
+
             // Simpan Jawaban (AJAX)
             Route::post('/save-answer', 'saveAnswer')->name('save_answer');
-            
+
             // Selesai Ujian
             Route::post('/{exam}/finish', 'finish')->name('finish');
         });

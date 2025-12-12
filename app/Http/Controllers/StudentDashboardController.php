@@ -15,7 +15,9 @@ class StudentDashboardController extends Controller
     public function index(Request $request)
     {
         $student = session('student');
-        if (!$student) return redirect()->route('login');
+        if (! $student) {
+            return redirect()->route('login');
+        }
 
         // Definisi Menu Akses Cepat (Manual)
         $quickLinks = [
@@ -35,8 +37,8 @@ class StudentDashboardController extends Controller
 
         $announcement = [
             'title' => 'Informasi Penting',
-            'body'  => 'Selamat datang di panel ujian online.',
-            'guidelines' => ['Wajib login 15 menit sebelum mulai.', 'Dilarang membuka tab lain.']
+            'body' => 'Selamat datang di panel ujian online.',
+            'guidelines' => ['Wajib login 15 menit sebelum mulai.', 'Dilarang membuka tab lain.'],
         ];
 
         return view('siswa.dashboard', compact('student', 'quickLinks', 'announcement'));
@@ -48,15 +50,19 @@ class StudentDashboardController extends Controller
     public function examList(Request $request)
     {
         $student = session('student');
-        if (!$student) return redirect()->route('login');
+        if (! $student) {
+            return redirect()->route('login');
+        }
 
         $kelasSiswa = $student['kelas'] ?? $student['class'] ?? null;
-        if (!$kelasSiswa) return redirect()->route('login')->withErrors(['auth' => 'Data kelas error.']);
+        if (! $kelasSiswa) {
+            return redirect()->route('login')->withErrors(['auth' => 'Data kelas error.']);
+        }
 
         // Ambil Data Ujian
         $exams = Exam::with(['questionSet', 'teacher'])
-            ->whereHas('questionSet', function($query) use ($kelasSiswa) {
-                $query->where('class_level', $kelasSiswa); 
+            ->whereHas('questionSet', function ($query) use ($kelasSiswa) {
+                $query->where('class_level', $kelasSiswa);
             })
             ->orderBy('tanggal_mulai', 'desc')
             ->get();

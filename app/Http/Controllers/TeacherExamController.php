@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Exam;
 use App\Models\QuestionSet;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TeacherExamController extends Controller
@@ -98,6 +98,7 @@ class TeacherExamController extends Controller
     private function resolveTeacher(): ?array
     {
         $teacher = session('teacher');
+
         return ($teacher && array_key_exists('id', $teacher)) ? $teacher : null;
     }
 }
