@@ -1,4 +1,4 @@
-@extends('layouts.student')
+@extends('layouts.exam')
 
 @section('title', $exam->nama_ujian)
 
@@ -114,25 +114,25 @@
 
 {{-- SCRIPT PENTING: Timer & Auto Save --}}
 <script>
-    // 1. SETUP TIMER
-    let timeLeft = {{ $timeLeft }}; // Detik tersisa dari Controller
+    // --- VARIABLES ---
+    let timeLeft = {{ $timeLeft }}; 
     const timerDisplay = document.getElementById('timer');
+    let isNavigating = false; // Penanda agar tidak dianggap curang saat pindah soal
 
+    // --- 1. SETUP TIMER (FIX DESIMAL) ---
     function updateTimer() {
         if (timeLeft <= 0) {
             timerDisplay.innerText = "00:00:00";
-            // Jika waktu habis, paksa submit
             if(!document.getElementById('finishForm').dataset.submitted) {
                  alert("Waktu Habis! Jawaban Anda akan dikirim otomatis.");
-                 document.getElementById('finishForm').dataset.submitted = true;
-                 document.getElementById('finishForm').submit();
+                 forceFinish();
             }
             return;
         }
 
         let hours = Math.floor(timeLeft / 3600);
         let minutes = Math.floor((timeLeft % 3600) / 60);
-        let seconds = timeLeft % 60;
+        let seconds = Math.floor(timeLeft % 60); 
 
         // Format 00:00:00
         timerDisplay.innerText = 
@@ -149,19 +149,62 @@
         timeLeft--;
     }
 
-    // Jalankan timer setiap 1 detik
     setInterval(updateTimer, 1000);
-    updateTimer(); // Jalankan sekali di awal
+    updateTimer(); 
 
-    // 2. FUNGSI SIMPAN JAWABAN (AJAX)
+    // --- 2. FUNGSI NAVIGASI AMAN ---
+    // Pasang ini di semua tombol link agar tidak dianggap curang
+    document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('click', () => {
+            isNavigating = true; 
+        });
+    });
+
+    // --- 3. ANTI-CHEATING (LEBIH PINTAR) ---
+    const maxViolations = 3;
+    
+    // Ambil jumlah pelanggaran dari Memory Browser (biar gak reset pas ganti soal)
+    let violationCount = localStorage.getItem('violation_count_{{ $exam->ujian_id }}') || 0;
+
+    document.addEventListener("visibilitychange", function() {
+        // Jika sedang pindah soal atau ujian sudah selesai, abaikan
+        if (isNavigating || document.getElementById('finishForm').dataset.submitted) return;
+
+        if (document.hidden) {
+            violationCount++;
+            localStorage.setItem('violation_count_{{ $exam->ujian_id }}', violationCount); // Simpan ke memory
+            
+            let sisaNyawa = maxViolations - violationCount;
+            
+            if (sisaNyawa > 0) {
+                alert(`PERINGATAN KERAS! \nAnda terdeteksi meninggalkan halaman ujian. \n\nSisa kesempatan: ${sisaNyawa} kali lagi sebelum ujian dihentikan otomatis.`);
+            } else {
+                alert("MAAF, ANDA DIDISKUALIFIKASI.\nAnda terlalu sering meninggalkan halaman ujian.");
+                forceFinish();
+            }
+        }
+    });
+
+    // Blokir Klik Kanan
+    document.addEventListener('contextmenu', event => {
+        event.preventDefault();
+        // alert("Klik kanan dimatikan."); // Alert saya matikan biar gak ganggu kalau kepencet
+    });
+
+    // Blokir Copy Paste
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('cut', e => e.preventDefault());
+    document.addEventListener('paste', e => e.preventDefault());
+
+    // --- 4. DATA SAVING & FINISH ---
     function saveAnswer(questionId, answerIndex) {
-        // Efek UI: Highlight pilihan
+        // ... (Kode sama seperti sebelumnya) ...
+        // Tambahkan efek visual saja
         document.querySelectorAll('.answer-option').forEach(el => {
             el.classList.remove('border-primary', 'bg-light');
         });
         event.target.closest('label').classList.add('border-primary', 'bg-light');
 
-        // Kirim ke Server
         fetch("{{ route('student.exam.save_answer') }}", {
             method: "POST",
             headers: {
@@ -169,28 +212,40 @@
                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
             },
             body: JSON.stringify({
-                exam_result_id: {{ $examResult->hasil_id }}, // Perhatikan: pakai hasil_id
+                exam_result_id: {{ $examResult->hasil_id }},
                 question_id: questionId,
                 answer_index: answerIndex
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Jawaban tersimpan", data);
-        })
-        .catch(error => console.error("Gagal menyimpan:", error));
+        }).catch(err => console.log('Auto-save error:', err));
     }
 
-    // 3. FUNGSI SELESAI
     function finishExam() {
-        if(confirm("Apakah Anda yakin ingin menyelesaikan ujian? Jawaban tidak bisa diubah lagi.")) {
-            document.getElementById('finishForm').submit();
+        isNavigating = true; // Biar gak kena deteksi curang pas klik selesai
+        if(confirm("Yakin ingin menyelesaikan ujian?")) {
+            forceFinish();
+        } else {
+            isNavigating = false; // Balikin lagi kalau cancel
         }
+    }
+
+    function forceFinish() {
+        // Hapus history pelanggaran biar bersih untuk ujian berikutnya (opsional)
+        localStorage.removeItem('violation_count_{{ $exam->ujian_id }}');
+        
+        const form = document.getElementById('finishForm');
+        form.dataset.submitted = true;
+        form.submit();
     }
 </script>
 
 <style>
     .cursor-pointer { cursor: pointer; }
     .answer-option:hover { background-color: #f8f9fa; }
+    body {
+        user-select: none; /* Standar */
+        -webkit-user-select: none; /* Chrome/Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE */
+    }
 </style>
 @endsection
