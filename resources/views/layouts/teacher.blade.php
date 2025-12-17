@@ -47,7 +47,9 @@
             
             <div class="ms-auto d-flex align-items-center">
                 <div class="text-end me-3">
-                    <small class="d-block text-muted">Guru</small>
+                    <small class="d-block text-muted">
+                        Guru {{ session('teacher.subject') }}
+                    </small>
                     <span class="fw-bold">{{ session('teacher.name', 'Bapak/Ibu Guru') }}</span>
                 </div>
                 <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;">

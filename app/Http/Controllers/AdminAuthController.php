@@ -55,6 +55,7 @@ class AdminAuthController extends Controller
                 'id' => $teacher->guru_id, // Sesuai database Anda (guru_id)
                 'username' => $teacher->username,
                 'name' => $teacher->nama_guru,
+                'subject' => $teacher->matapelajaran,
                 'role' => 'Teacher',
                 'initials' => $this->generateInitials($teacher->nama_guru),
             ]);
