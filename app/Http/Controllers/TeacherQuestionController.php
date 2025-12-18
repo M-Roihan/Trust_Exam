@@ -47,14 +47,22 @@ class TeacherQuestionController extends Controller
     {
         $teacher = $this->resolveTeacher();
         if (! $teacher) {
-            return redirect()->route('login')->withErrors(['auth' => 'Sesi guru tidak ditemukan.']);
+            return redirect()->route('login')
+                ->withErrors(['auth' => 'Sesi guru tidak ditemukan.']);
         }
 
-        $subjects = ['Bahasa Indonesia', 'Matematika', 'Fisika', 'Biologi', 'Kimia', 'Bahasa Inggris'];
+        // 🔐 Ambil mapel dari data guru (SESSION)
+        $subjects = [$teacher['subject']]; // HANYA 1 MAPEL
+
         $semesters = ['Ganjil', 'Genap'];
         $classes = self::CLASS_LIST;
 
-        return view('guru.questions.create', compact('teacher', 'subjects', 'semesters', 'classes'));
+        return view('guru.questions.create', compact(
+            'teacher',
+            'subjects',
+            'semesters',
+            'classes'
+        ));
     }
 
     /**
