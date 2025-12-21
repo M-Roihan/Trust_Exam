@@ -101,7 +101,7 @@
                             Login
                         </button>
                         <p class="text-center mt-3 mb-0 text-muted small">
-                        Hubungi Pengawas Jika Ada Masalah Pada Login
+                        Lapor Kepada Pengawas Jika Ada Masalah Pada Login
                         </p>
 
                     </form>

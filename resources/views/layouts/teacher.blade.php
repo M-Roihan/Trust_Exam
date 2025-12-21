@@ -28,7 +28,7 @@
         <a href="{{ route('teacher.exams.index') }}" class="{{ request()->routeIs('teacher.exams.*') ? 'active' : '' }}">
             <i class="fas fa-calendar-alt me-2"></i> Jadwal Ujian
         </a>
-        <a href="#"><i class="fas fa-chart-bar me-2"></i> Hasil Nilai</a>
+        <a href="#"><i class="fas fa-chart-bar me-2"></i> Hasil Ujian</a>
         
         <hr class="text-white-50 mt-4">
         
@@ -47,7 +47,7 @@
             
             <div class="ms-auto d-flex align-items-center">
                 <div class="text-end me-3">
-                    <small class="d-block text-muted">
+                    <small class="d-block text-end">
                         Guru {{ session('teacher.subject') }}
                     </small>
                     <span class="fw-bold">{{ session('teacher.name', 'Bapak/Ibu Guru') }}</span>
