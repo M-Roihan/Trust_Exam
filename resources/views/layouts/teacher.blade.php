@@ -13,23 +13,35 @@
 <body>
 
 <div class="d-flex">
+    {{-- SIDEBAR --}}
     <div class="sidebar p-3 d-none d-lg-block" style="width: 260px;">
         <h4 class="text-white mb-4 ps-2"><i class="fas fa-graduation-cap me-2"></i>TrustExam</h4>
         
+        {{-- KELOMPOK 1: MENU UTAMA --}}
         <small class="text-white-50 text-uppercase ps-2" style="font-size: 0.75rem;">Menu Utama</small>
+        
         <a href="{{ route('teacher.dashboard') }}" class="{{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}">
             <i class="fas fa-home me-2"></i> Dashboard
         </a>
+        
         <a href="{{ route('teacher.questions.index') }}" class="{{ request()->routeIs('teacher.questions.*') ? 'active' : '' }}">
             <i class="fas fa-book-open me-2"></i> Bank Soal
         </a>
+
+        {{-- PERBAIKAN: Menu Data Siswa ditaruh di sini dengan struktur yang SAMA --}}
+        <a href="{{ route('teacher.student.index') }}" class="{{ request()->routeIs('teacher.student.*') ? 'active' : '' }}">
+            <i class="fas fa-users me-2"></i> Data Siswa
+        </a>
         
+        {{-- KELOMPOK 2: UJIAN --}}
         <small class="text-white-50 text-uppercase ps-2 mt-3 d-block" style="font-size: 0.75rem;">Ujian</small>
+        
         <a href="{{ route('teacher.exams.index') }}" class="{{ request()->routeIs('teacher.exams.*') ? 'active' : '' }}">
             <i class="fas fa-calendar-alt me-2"></i> Jadwal Ujian
         </a>
-        <a href="#"><i class="fas fa-chart-bar me-2"></i> Hasil Ujian</a>
         
+        <a href="#"><i class="fas fa-chart-bar me-2"></i> Hasil Ujian</a>
+
         <hr class="text-white-50 mt-4">
         
         <form action="{{ route('logout') }}" method="post">
@@ -40,7 +52,9 @@
         </form>
     </div>
 
+    {{-- KONTEN UTAMA --}}
     <div class="w-100">
+        {{-- NAVBAR ATAS --}}
         <nav class="navbar navbar-light bg-white shadow-sm px-4">
             <button class="btn btn-link d-lg-none"><i class="fas fa-bars"></i></button>
             <span class="navbar-brand mb-0 h1 ms-2">Panel Guru</span>
@@ -58,6 +72,7 @@
             </div>
         </nav>
 
+        {{-- ISI HALAMAN --}}
         <div class="content">
             @yield('content')
         </div>
