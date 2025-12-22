@@ -6,7 +6,6 @@ use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\StudentExamController;
 use App\Http\Controllers\TeacherExamController;
 use App\Http\Controllers\TeacherQuestionController;
-use App\Http\Controllers\TeacherStudentController;
 use Illuminate\Support\Facades\Route;
 
 // === AUTHENTICATION ===
