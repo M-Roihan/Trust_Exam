@@ -31,7 +31,7 @@ class StudentDashboardController extends Controller
                 'label' => 'Riwayat Nilai',
                 'description' => 'Pantau hasil nilai ujianmu.',
                 'icon' => 'fas fa-chart-line text-success',
-                'href' => '#', // Nanti diarahkan ke halaman nilai
+                'href' => route('student.grades'), // Mengarahkan ke halaman nilai
             ],
         ];
 
@@ -74,5 +74,26 @@ class StudentDashboardController extends Controller
 
         // Return ke view khusus 'siswa.exams'
         return view('siswa.exam.exams', compact('student', 'exams', 'takenExams'));
+    }
+
+    /**
+     * Menampilkan halaman riwayat nilai ujian siswa.
+     */
+    public function history()
+    {
+        $student = session('student');
+
+        if (! $student) {
+            return redirect()->route('login');
+        }
+
+        // Ambil data ujian yang sudah SELESAI milik siswa ini
+        $results = ExamResult::with(['exam.questionSet', 'exam.teacher'])
+            ->where('siswa_id', $student['id'])
+            ->where('status', 'Selesai')
+            ->orderByDesc('updated_at') // Urutkan dari yang terbaru
+            ->paginate(10);
+
+        return view('siswa.grades.index', compact('student', 'results'));
     }
 }

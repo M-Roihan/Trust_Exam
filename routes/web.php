@@ -6,6 +6,7 @@ use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\StudentExamController;
 use App\Http\Controllers\TeacherExamController;
 use App\Http\Controllers\TeacherQuestionController;
+use App\Http\Controllers\TeacherStudentController;
 use Illuminate\Support\Facades\Route;
 
 // === AUTHENTICATION ===
@@ -62,7 +63,7 @@ Route::middleware('teacher.auth')->group(function () {
         });
 
     // Menu Data Siswa
-    Route::get('guru/student', [App\Http\Controllers\TeacherStudentController::class, 'index'])
+    Route::get('guru/student', [TeacherStudentController::class, 'index'])
         ->name('teacher.student.index');
 });
 
@@ -72,6 +73,9 @@ Route::middleware('student.auth')->group(function () {
     // 1. Dashboard & List Ujian
     Route::get('/siswa/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
     Route::get('/siswa/list-ujian', [StudentDashboardController::class, 'examList'])->name('student.exams');
+
+    // Menu Riwayat Nilai
+    Route::get('siswa/nilai', [StudentDashboardController::class, 'history'])->name('student.grades');
 
     // 2. FITUR MENGERJAKAN UJIAN (Exam Engine) - INI YANG BARU DITAMBAHKAN
     Route::controller(StudentExamController::class)
