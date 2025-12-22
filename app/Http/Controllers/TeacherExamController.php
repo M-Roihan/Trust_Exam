@@ -40,7 +40,8 @@ class TeacherExamController extends Controller
         }
 
         // Ambil daftar Paket Soal milik guru ini untuk dropdown
-        $questionSets = QuestionSet::where('teacher_id', $teacher['id'])
+        $questionSets = QuestionSet::withCount('questions')
+            ->where('teacher_id', $teacher['id'])
             ->orderByDesc('updated_at')
             ->get();
 

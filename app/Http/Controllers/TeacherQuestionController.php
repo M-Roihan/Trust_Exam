@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Exam;
 use App\Models\Question;
-use App\Models\QuestionSet; // <--- PENTING: Tambahan Import Model Exam
+use App\Models\QuestionSet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -47,14 +47,22 @@ class TeacherQuestionController extends Controller
     {
         $teacher = $this->resolveTeacher();
         if (! $teacher) {
-            return redirect()->route('login')->withErrors(['auth' => 'Sesi guru tidak ditemukan.']);
+            return redirect()->route('login')
+                ->withErrors(['auth' => 'Sesi guru tidak ditemukan.']);
         }
 
-        $subjects = ['Bahasa Indonesia', 'Matematika', 'Fisika', 'Biologi', 'Kimia', 'Bahasa Inggris'];
+        // 🔐 Ambil mapel dari data guru (SESSION)
+        $subjects = [$teacher['subject']]; // HANYA 1 MAPEL
+
         $semesters = ['Ganjil', 'Genap'];
         $classes = self::CLASS_LIST;
 
-        return view('guru.questions.create', compact('teacher', 'subjects', 'semesters', 'classes'));
+        return view('guru.questions.create', compact(
+            'teacher',
+            'subjects',
+            'semesters',
+            'classes'
+        ));
     }
 
     /**
