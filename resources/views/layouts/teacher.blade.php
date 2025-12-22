@@ -40,7 +40,7 @@
             <i class="fas fa-calendar-alt me-2"></i> Jadwal Ujian
         </a>
         
-        <a href="#"><i class="fas fa-chart-bar me-2"></i> Hasil Ujian</a>
+        <a href="{{ route('teacher.results.index') }}"><i class="fas fa-chart-bar me-2"></i> Hasil Ujian</a>
 
         <hr class="text-white-50 mt-4">
         

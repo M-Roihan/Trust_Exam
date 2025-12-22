@@ -7,6 +7,7 @@ use App\Http\Controllers\StudentExamController;
 use App\Http\Controllers\TeacherExamController;
 use App\Http\Controllers\TeacherQuestionController;
 use App\Http\Controllers\TeacherStudentController;
+use App\Http\Controllers\TeacherResultController;
 use Illuminate\Support\Facades\Route;
 
 // === AUTHENTICATION ===
@@ -61,10 +62,14 @@ Route::middleware('teacher.auth')->group(function () {
             Route::post('/', 'store')->name('store');     // Simpan Jadwal
             Route::delete('/{id}', 'destroy')->name('destroy'); // Hapus Jadwal
         });
-
+        
     // Menu Data Siswa
     Route::get('guru/student', [TeacherStudentController::class, 'index'])
         ->name('teacher.student.index');
+
+    // Menu Hasil Ujian Siswa
+    Route::get('guru/results', [TeacherResultController::class, 'index'])
+        ->name('teacher.results.index');
 });
 
 // === SISWA ROUTES ===
