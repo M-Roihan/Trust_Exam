@@ -61,6 +61,7 @@ Route::middleware('teacher.auth')->group(function () {
             Route::get('/create', 'create')->name('create'); // Form Buat Jadwal
             Route::post('/', 'store')->name('store');     // Simpan Jadwal
             Route::delete('/{id}', 'destroy')->name('destroy'); // Hapus Jadwal
+            Route::get('/export-results', [TeacherExamController::class, 'exportResult'])->name('export.results');
         });
         
     // Menu Data Siswa

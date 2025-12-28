@@ -4,7 +4,13 @@
 
 @section('content')
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Hasil Ujian Siswa</h1>
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h1 class="h3 mb-0">Hasil Ujian Siswa</h1>
+        {{-- TOMBOL EKSPOR --}}
+        <a href="{{ route('teacher.exams.export.results') }}" class="btn btn-success">
+            <i class="fas fa-file-excel me-1"></i> Ekspor ke Excel
+        </a>
+    </div>
 
     <div class="card mb-4 shadow-sm">
         <div class="card-header bg-success text-white">
@@ -49,7 +55,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
+                            <td colspan="9" class="text-center text-muted py-4">
                                 Belum ada data hasil ujian.
                             </td>
                         </tr>
@@ -57,7 +63,9 @@
                 </tbody>
             </table>
 
-            {{ $results->links() }}
+            <div class="mt-3">
+                {{ $results->links() }}
+            </div>
         </div>
     </div>
 </div>
