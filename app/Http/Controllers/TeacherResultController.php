@@ -11,10 +11,10 @@ class TeacherResultController extends Controller
     {
         $results = ExamResult::with([
             'student',
-            'exam.questionSet'
+            'exam.questionSet',
         ])
-        ->latest()
-        ->paginate(10);
+            ->latest()
+            ->paginate(10);
 
         return view('guru.results.index', compact('results'));
     }

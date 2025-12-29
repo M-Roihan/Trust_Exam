@@ -104,38 +104,40 @@ class TeacherExamController extends Controller
     }
 
     /**
-     * Ekspor Rekap Hasil Ujian ke format CSV (Excel) 
+     * Ekspor Rekap Hasil Ujian ke format CSV (Excel)
      */
     public function exportResult()
     {
         $teacher = $this->resolveTeacher();
-        if (!$teacher) return redirect()->route('login');
+        if (! $teacher) {
+            return redirect()->route('login');
+        }
 
         $results = \App\Models\ExamResult::with(['student', 'exam.questionSet'])
-            ->whereHas('exam', function($query) use ($teacher) {
+            ->whereHas('exam', function ($query) use ($teacher) {
                 $query->where('guru_id', $teacher['id']);
             })
             ->latest()
             ->get();
 
-        $fileName = 'Rekap_Hasil_Ujian_' . date('d-m-Y') . '.csv';
+        $fileName = 'Rekap_Hasil_Ujian_'.date('d-m-Y').'.csv';
 
         $headers = [
-            "Content-type"        => "text/csv; charset=UTF-8",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
-        $callback = function() use($results) {
+        $callback = function () use ($results) {
             $file = fopen('php://output', 'w');
-            
+
             // 1. Tambahkan BOM agar Excel mengenali format UTF-8
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-            
+
             // 2. Beritahu Excel secara paksa untuk menggunakan titik koma (sep=;)
-            fputs($file, "sep=;\n");
+            fwrite($file, "sep=;\n");
 
             // 3. Header kolom menggunakan pemisah titik koma
             fputcsv($file, ['No', 'NIS', 'Nama Siswa', 'Kelas', 'Nama Ujian', 'Mata Pelajaran', 'Tanggal', 'Nilai'], ';');
@@ -150,7 +152,7 @@ class TeacherExamController extends Controller
                     $row->exam->nama_ujian ?? '-',
                     $row->exam->questionSet->subject ?? '-',
                     $row->updated_at->format('d/m/Y H:i'),
-                    $row->nilai
+                    $row->nilai,
                 ], ';');
             }
             fclose($file);

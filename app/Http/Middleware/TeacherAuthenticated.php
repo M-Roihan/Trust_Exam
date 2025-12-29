@@ -24,7 +24,7 @@ class TeacherAuthenticated
 
         $response = $next($request);
 
-            // Tambahkan header untuk mencegah caching halaman
+        // Tambahkan header untuk mencegah caching halaman
         if (method_exists($response, 'header')) {
             return $response
                 ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
