@@ -8,11 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/student-dashboard.css') }}">
-
 </head>
 <body>
 
 <div class="d-flex">
+    {{-- SIDEBAR --}}
     <div id="sidebar" class="sidebar p-4 d-none d-lg-block" style="width: 280px;">
         <div class="d-flex align-items-center mb-5">
             <i class="fas fa-shapes fa-2x me-2"></i>
@@ -21,18 +21,22 @@
         
         <small class="text-uppercase text-white-50 mb-2 d-block" style="font-size: 0.75rem;">Menu Ujian</small>
         
-        <a href="{{ route('student.dashboard') }}" class="{{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
-            <i class="fas fa-home me-2"></i> Beranda
+        {{-- MENU 1: BERANDA --}}
+        <a href="{{ route('student.dashboard') }}" class="nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }} mb-2">
+            <i class="fas fa-home me-2" style="width: 20px; text-align: center;"></i> Beranda
         </a>
         
-         <a href="{{ route('student.exams') }}" class="nav-link">
-            <i class="fas fa-file-alt me-2"></i> Daftar Ujian
+        {{-- MENU 2: DAFTAR UJIAN --}}
+        <a href="{{ route('student.exams') }}" class="nav-link {{ request()->routeIs('student.exams') ? 'active' : '' }} mb-2">
+            <i class="fas fa-file-alt me-2" style="width: 20px; text-align: center;"></i> Daftar Ujian
         </a>
 
-        <a href="#">
-            <i class="fas fa-history me-2"></i> Riwayat Nilai
+        {{-- MENU 3: RIWAYAT NILAI --}}
+        <a href="{{ route('student.grades') }}" class="nav-link {{ request()->routeIs('student.grades') ? 'active' : '' }} mb-2">
+            <i class="fas fa-history me-2" style="width: 20px; text-align: center;"></i> Riwayat Nilai
         </a>
         
+        {{-- PROFILE SECTION --}}
         <div class="mt-5 p-3 rounded" style="background: rgba(0,0,0,0.1);">
             <div class="d-flex align-items-center">
                 <div class="bg-white text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-weight: bold;">
@@ -53,7 +57,9 @@
         </div>
     </div>
 
+    {{-- KONTEN UTAMA --}}
     <div class="w-100">
+        {{-- Navbar Mobile --}}
         <nav class="navbar navbar-light bg-white shadow-sm d-lg-none px-3 mb-3">
             <span class="navbar-brand fw-bold text-success">TrustExam Siswa</span>
             <button class="btn btn-outline-success" onclick="toggleSidebar()">
@@ -65,7 +71,7 @@
             @yield('content')
         </div>
         
-        <footer class="text-center text-muted mt-5 small">
+        <footer class="text-center text-muted mt-5 small pb-3">
             &copy; {{ date('Y') }} TrustExam. Selamat Belajar & Semangat Ujian!
         </footer>
     </div>
